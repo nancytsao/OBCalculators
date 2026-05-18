@@ -52,7 +52,7 @@ function formatTest(test, edd) {
 }
 
 function formatAppointment(appointmentWeek, edd) {
-	var gestationalAge = GestationalAge(appointmentWeek, 0);
+	var gestationalAge = new GestationalAge(appointmentWeek, 0);
 	var appointmentDate = gestationalAge.getCurrentDate(edd);
 
 	var output = appointmentWeek + " weeks - "
