@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<title>Gestational Age Calculator</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<script src="./js/GestationalAge.js"></script>
+	<script src="./js/validations.js"></script>
+	<script src="./js/Timeframe.js"></script>
+	<script src="./js/Test.js"></script>
+	<script src="./js/utilities.js"></script>
+	<script src="./js/formatters.js"></script>
+	<script src="./js/date.js"></script>
+
+</head>
+<body onload="load();">
+	<form name="form">
+	<table>
+		<tr><td style="font-weight:bold">
+			Gestational Age
+		</td></tr>
+		<tr><td><hr/></td></tr>
+		<tr><td>
+			<table>
+				<tr>
+					<td>EDD:&nbsp;</td>
+					<td><input type="text" id="eddDay" style="text-align:center" size="2" maxlength="2"
+								onKeyUp="hideScreeningDates();"/>
+					</td>
+					<td>-</td>
+					<td><input type="text" id="eddMonth" style="text-align:center" size="2" maxlength="2"
+								onKeyUp="hideScreeningDates();"/>
+					</td>
+					<td>-</td>
+					<td><input type="text" id="eddYear" style="text-align:center" size="4" maxlength="4"
+								onKeyUp="hideScreeningDates();"/>
+					</td>
+					<td>&nbsp;<span id="eddError" style="font-size:small;color:red"></span></td>
+				</tr>
+				<tr style="text-align:center;font-size:small">
+					<td></td>
+					<td>dd</td>
+					<td>-</td>
+					<td>mm</td>
+					<td>-</td>
+					<td>yyyy</td>
+				</tr>
+			</table>
+		</td></td>
+		<tr><td><hr/></td></tr>
+		<tr><td>
+			<table id="currentDateTable">
+				<tr>
+					<td>Date:&nbsp;</td>
+					<td>
+						<input type="text" id="currentDay" style="text-align:center" size="2" maxlength="2"
+								onKeyUp="onChangeOfCurrentDate()"/>
+					</td>
+					<td>-</td>
+					<td>
+						<input type="text" id="currentMonth" style="text-align:center" size="2" maxlength="2"
+								onKeyUp="onChangeOfCurrentDate()"/>
+					</td>
+					<td>-</td>
+					<td>
+						<input type="text" id="currentYear" style="text-align:center" size="4" maxlength="4"
+								onKeyUp="onChangeOfCurrentDate()"/>
+					</td>
+					<td>&nbsp;<span id="currentDateError" style="font-size:small;color:red"></span></td>
+				</tr>
+				<tr style="text-align:center;font-size:small">
+					<td></td>
+					<td>dd</td>
+					<td>-</td>
+					<td>mm</td>
+					<td>-</td>
+					<td>yyyy</td>
+				</tr>
+			</table>
+		</td></tr>
+		<tr><td>
+			<table style="width:200px">
+				<tr>
+					<td style="width:50%;text-align:right">
+						<input type="button" onClick="calculateAge();" value="\/" />
+					</td>
+					<td>
+						<input type="button" onClick="calculateDate();" value="/\" />
+					</td>
+				<tr>
+			</table>
+		</td></tr>
+		<tr><td>
+			<table id="gestationalAgeTable">
+				<tr>
+					<td>Gestational Age:&nbsp;</td>
+					<td>
+						<input type="text" id="ageWeek" style="text-align:center" size="2" maxlength="2"
+								onKeyUp="onChangeOfGestationalAge();"/>
+					</td>
+					<td>+</td>
+					<td>
+						<input type="text" id="ageDay" style="text-align:center" size="1" maxlength="1"
+								onKeyUp="onChangeOfGestationalAge();"/>
+					</td>
+					<td>&nbsp;<span id="ageError" style="font-size:small;color:red"></span></td>
+				</tr>
+				<tr style="text-align:center;font-size:small">
+					<td></td>
+					<td>week</td>
+					<td>+</td>
+					<td>day</td>
+				</tr>
+			</table>
+		</td></tr>
+		<tr><td><hr/></td></tr>
+		<tr><td>
+			<table>
+				<tr>
+					<td>
+					<input type="button" id="screeningDateCheckbox" onClick="displayScreeningDates();" value="Show Screening Dates"/>
+					</td>
+					<td>
+					<input type="button" onClick="reset();load();" value="Reset"/>
+					<td>
+				</tr>
+			</table>
+		</td></tr>
+		<tr><td>
+			<span id="screeningDateSpan"></span>
+		</td></tr>
+		<tr><td>
+			<table>
+				<tr><td>
+					<a href="./home.html">Home</a>
+				</td></tr>
+			</table>
+		</td></tr>
+	</table>
+	</form>
+
+<script type="text/javascript">
+
+	function load() {
+		var today = getToday();
+
+		document.getElementById("eddYear").value = today.getFullYear();
+
+		document.getElementById("currentYear").value = today.getFullYear();
+		document.getElementById("currentMonth").value = today.getMonth() + 1;
+		document.getElementById("currentDay").value = today.getDate();
+
+		resetSpans(document);
+		removeHighlight("currentDateTable", document);
+		removeHighlight("gestationalAgeTable", document);
+
+	}
+
+	function calculateAge() {
+		var eddYear = document.getElementById("eddYear").value;
+		var eddMonth = document.getElementById("eddMonth").value;
+		var eddDay = document.getElementById("eddDay").value;
+
+		var currentYear = document.getElementById("currentYear").value;
+		var currentMonth = document.getElementById("currentMonth").value;
+		var currentDay = document.getElementById("currentDay").value;
+
+		clearSpanText("ageError", document);
+
+		if (validateDate(eddYear, eddMonth, eddDay, "eddError", document)
+			& validateDate(currentYear, currentMonth, currentDay, "currentDateError", document))
+		{
+			var currentDate = createDate(currentYear, currentMonth - 1, currentDay);
+			var edd = createDate(eddYear, eddMonth - 1, eddDay);
+			var age = getGestationalAge(currentDate, edd)
+
+			setCalculatedGestaionalAge(age);
+		}
+	}
+
+	function calculateDate() {
+		var eddYear = document.getElementById("eddYear").value;
+		var eddMonth = document.getElementById("eddMonth").value;
+		var eddDay = document.getElementById("eddDay").value;
+
+		var ageWeek = document.getElementById("ageWeek").value;
+		var ageDay = document.getElementById("ageDay").value;
+
+		clearSpanText("currentDateError", document);
+
+		if (validateDate(eddYear, eddMonth, eddDay, "eddError", document)
+			& validateGestationalAge(ageWeek, ageDay, "ageError", document))
+		{
+			var age = new GestationalAge(parseInt(ageWeek), parseInt(ageDay));
+			var edd = createDate(eddYear, eddMonth - 1, eddDay);
+			var date = age.getCurrentDate(edd);
+
+			setCalculatedDate(date);
+		}
+	}
+
+	function setCalculatedGestaionalAge(age) {
+		document.getElementById("ageWeek").value = age.week;
+		document.getElementById("ageDay").value = age.day;
+
+		removeHighlight("currentDateTable", document);
+		setHighlight("gestationalAgeTable", document);
+	}
+
+	function setCalculatedDate(date) {
+		document.getElementById("currentYear").value = date.getFullYear();
+		document.getElementById("currentMonth").value = date.getMonth() + 1;
+		document.getElementById("currentDay").value = date.getDate();
+
+		removeHighlight("gestationalAgeTable", document);
+		setHighlight("currentDateTable", document);
+	}
+
+	function onChangeOfGestationalAge() {
+		removeHighlight("gestationalAgeTable", document);
+		document.getElementById("currentYear").value = "";
+		document.getElementById("currentMonth").value = "";
+		document.getElementById("currentDay").value = "";
+		clearSpanText("currentDateError", document);
+	}
+
+	function onChangeOfCurrentDate() {
+		removeHighlight("currentDateTable", document);
+		document.getElementById("ageWeek").value = "";
+		document.getElementById("ageDay").value = "";
+		clearSpanText("ageError", document);
+	}
+
+	function displayScreeningDates() {
+		var eddYear = document.getElementById("eddYear").value;
+		var eddMonth = document.getElementById("eddMonth").value;
+		var eddDay = document.getElementById("eddDay").value;
+
+		if (validateDate(eddYear, eddMonth, eddDay, "eddError", document))
+		{
+			var edd = createDate(eddYear, eddMonth - 1, eddDay);
+			var output = printTests(edd);
+
+			processAndDisplayScreeningDates(output);
+		}
+	}
+
+	function hideScreeningDates() {
+		clearSpanText("screeningDateSpan", document);
+	}
+
+	function printTests(edd) {
+		var output = "";
+		for (i = 0; i < TESTS.length; i++) {
+			output = output + formatTest(TESTS[i], edd) + "\n\n";
+		}
+		return output;
+	}
+
+	function processAndDisplayScreeningDates(output) {
+		var lines = output.split("\n");
+		var span = document.getElementById("screeningDateSpan");
+
+		removeChildNodes(span);
+
+		for (i = 0; i < lines.length; i++) {
+			span.appendChild(document.createElement('br'));
+			span.appendChild(document.createTextNode(lines[i]));
+		}
+	}
+
+</script>
+
+</body>
+</html>

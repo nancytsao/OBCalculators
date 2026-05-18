@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<title>EDD Calculator</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<script src="./js/GestationalAge.js"></script>
+	<script src="./js/validations.js"></script>
+	<script src="./js/utilities.js"></script>
+	<script src="./js/formatters.js"></script>
+	<script src="./js/date.js"></script>
+
+</head>
+<body onload="load();">
+	<form name="form">
+	<table>
+		<tr><td style="font-weight:bold">
+		Calculate EDD by
+		</td></tr>
+		<tr><td><hr/></td></tr>
+		<tr>
+			<td style="font-weight:bold">
+				<input type="checkbox" id="lmpCheckbox"
+				onclick="toggleSection('lmpCheckbox', 'lmpTable');">Last Menstrual Period</input>
+			</td>
+		</tr>
+		<tr><td>
+			<table id="lmpTable">
+				<tr><td>
+					<table>
+						<tr>
+							<td>Date:&nbsp;</td>
+							<td><input type="text" id="lmpDay" style="text-align:center" size="2" maxlength="2"/></td>
+							<td>-</td>
+							<td><input type="text" id="lmpMonth" style="text-align:center" size="2" maxlength="2"/></td>
+							<td>-</td>
+							<td><input type="text" id="lmpYear" style="text-align:center" size="4" maxlength="4"/></td>
+							<td>&nbsp;<span id="lmpDateError" style="font-size:small;color:red"></span></td>
+						</tr>
+						<tr style="text-align:center;font-size:small">
+							<td></td>
+							<td>dd</td>
+							<td>-</td>
+							<td>mm</td>
+							<td>-</td>
+							<td>yyyy</td>
+						</tr>
+					</table>
+				</tr></td>
+				<tr><td>
+					Average Cycle Length:&nbsp;
+					<input type="text" id="cycleLength" style="width:20px;text-align:center" />
+					days&nbsp;
+					<span id="cycleLengthError" style="font-size:small;color:red"></span>
+				</td></tr>
+				<tr><td>
+					EDD:&nbsp;
+					<span id="lmpEDD" style="font-weight:bold"></span>
+				</td></tr>
+				<tr><td>
+					GA:&nbsp;
+					<span id="lmpAge" style="font-weight:bold"></span>
+				</td></tr>
+			</table>
+		</td></tr>
+		<tr><td><hr/></td></tr>
+		<tr>
+			<td style="font-weight:bold">
+				<input type="checkbox" id="ovuCheckbox"
+				onclick="toggleSection('ovuCheckbox', 'ovuTable');">Ovulation</input>
+			</td>
+		</tr>
+		<tr><td>
+			<table id="ovuTable">
+				<tr><td>
+					<table>
+						<tr>
+							<td>Date:&nbsp;</td>
+							<td><input type="text" id="ovuDay" style="text-align:center" size="2" maxlength="2"/></td>
+							<td>-</td>
+							<td><input type="text" id="ovuMonth" style="text-align:center" size="2" maxlength="2"/></td>
+							<td>-</td>
+							<td><input type="text" id="ovuYear" style="text-align:center" size="4" maxlength="4"/></td>
+							<td>&nbsp;<span id="ovuDateError" style="font-size:small;color:red"></span></td>
+						</tr>
+						<tr style="text-align:center;font-size:small">
+							<td></td>
+							<td>dd</td>
+							<td>-</td>
+							<td>mm</td>
+							<td>-</td>
+							<td>yyyy</td>
+						</tr>
+					</table>
+				</td></tr>
+				<tr><td>
+					EDD:&nbsp;
+					<span id="ovuEDD" style="font-weight:bold"></span>
+				</td></tr>
+				<tr><td>
+					GA:&nbsp;
+					<span id="ovuAge" style="font-weight:bold"></span>
+				</td></tr>
+			</table>
+		</td></tr>
+		<tr><td><hr/></td></tr>
+		<tr>
+			<td style="font-weight:bold">
+				<input type="checkbox" id="usCheckbox"
+				onclick="toggleSection('usCheckbox', 'usTable');">Ultrasound</input>
+			</td>
+		</tr>
+		<tr><td>
+			<table id="usTable">
+				<tr><td>
+					<table>
+						<tr>
+							<td>Date:&nbsp;</td>
+							<td><input type="text" id="usDay" style="text-align:center" size="2" maxlength="2"/></td>
+							<td>-</td>
+							<td><input type="text" id="usMonth" style="text-align:center" size="2" maxlength="2"/></td>
+							<td>-</td>
+							<td><input type="text" id="usYear" style="text-align:center" size="4" maxlength="4"/></td>
+							<td>&nbsp;<span id="usDateError" style="font-size:small;color:red"></span></td>
+						</tr>
+						<tr style="text-align:center;font-size:small">
+							<td></td>
+							<td>dd</td>
+							<td>-</td>
+							<td>mm</td>
+							<td>-</td>
+							<td>yyyy</td>
+						</tr>
+					</table>
+				</tr></td>
+				<tr><td>
+					<table>
+						<tr>
+							<td>Gestational Age:&nbsp;</td>
+							<td><input type="text" id="usAgeWeek" style="text-align:center" size="2" maxlength="2"/></td>
+							<td>+</td>
+							<td><input type="text" id="usAgeDay" style="text-align:center" size="1" maxlength="1"/></td>
+							<td>&nbsp;<span id="usAgeError" style="font-size:small;color:red"></span></td>
+						</tr>
+						<tr style="text-align:center;font-size:small">
+							<td></td>
+							<td>week</td>
+							<td>+</td>
+							<td>day</td>
+						</tr>
+					</table>
+				</td></tr>
+				<tr><td>
+					Range: +/-
+					<input type="text" id="range" style="text-align:center" size="2" maxlength="2"/>
+					days&nbsp;&nbsp;
+					<span id="rangeError" style="font-size:small;color:red"></span>
+				</td></tr>
+				<tr><td>
+					EDD:&nbsp;
+					<span id="usEDD" style="font-weight:bold"></span>
+				</td></tr>
+				<tr><td>
+					Range:&nbsp;
+					<span id="usEDDRange" style="font-weight:bold"></span>
+				</td></tr>
+				<tr><td>
+					GA:&nbsp;
+					<span id="usAge" style="font-weight:bold"></span>
+				</td></tr>
+			</table>
+		</td></tr>
+		<tr><td><hr/></td></tr>
+		<tr><td>
+			<table id="buttonTable">
+				<tr><td>
+				<input type="button" onClick="reset();load();" value="Reset" />
+				<input type="button" onClick="calculate();" value="Calculate" />
+				</td></tr>
+			</table>
+		</td></tr>
+		<tr><td>
+			<table>
+				<tr><td>
+					<a href="./home.html">Home</a>
+				</td></tr>
+			</table>
+		</td></tr>
+	</table>
+	</form>
+
+<script type="text/javascript">
+
+	function load() {
+		var today = getToday();
+
+		document.getElementById("cycleLength").value = 28;
+		document.getElementById("range").value = 5;
+
+		document.getElementById("lmpYear").value = today.getFullYear();
+		document.getElementById("ovuYear").value = today.getFullYear();
+		document.getElementById("usYear").value = today.getFullYear();
+
+		toggleSection('lmpCheckbox', 'lmpTable');
+		toggleSection('ovuCheckbox', 'ovuTable');
+		toggleSection('usCheckbox', 'usTable');
+
+		toggleButtons();
+		resetSpans(document);
+	}
+
+	function toggleButtons() {
+		var lmpFlag = document.form.lmpCheckbox.checked;
+		var ovuFlag = document.form.ovuCheckbox.checked;
+		var usFlag = document.form.usCheckbox.checked;
+
+		if (lmpFlag || ovuFlag || usFlag)
+		{
+			document.getElementById("buttonTable").style.display="block";
+		} else {
+			document.getElementById("buttonTable").style.display="none";
+		}
+	}
+
+	function calculate() {
+		var lmpFlag = document.form.lmpCheckbox.checked;
+		var ovuFlag = document.form.ovuCheckbox.checked;
+		var usFlag = document.form.usCheckbox.checked;
+
+		if (lmpFlag) {
+			calculateLMP();
+		}
+		if (ovuFlag) {
+			calculateOvu();
+		}
+		if (usFlag){
+			calculateUS();
+		}
+	}
+
+	function calculateLMP() {
+		var year = document.getElementById("lmpYear").value;
+		var month = document.getElementById("lmpMonth").value;
+		var day = document.getElementById("lmpDay").value;
+		var cycleLength = document.getElementById("cycleLength").value;
+
+		if (validateDate(year, month, day, "lmpDateError", document)
+			& validateCycleLength(cycleLength, "cycleLengthError", document))
+		{
+			day = parseInt(day) + parseInt(cycleLength) - 14 + 38 * 7;
+			var edd = createDate(year, month - 1, day);
+			replaceSpanText("lmpEDD", formatEdd(edd), document);
+
+			var age = calculateGestationalAge(edd);
+			replaceSpanText("lmpAge", formatAgeShort(age), document);
+		}
+	}
+
+	function calculateOvu() {
+		var year = document.getElementById("ovuYear").value;
+		var month = document.getElementById("ovuMonth").value;
+		var day = document.getElementById("ovuDay").value;
+
+		if (validateDate(year, month, day, "ovuDateError", document))
+		{
+			day = parseInt(day) + 38 * 7;
+			var edd = createDate(year, month - 1, day);
+			replaceSpanText("ovuEDD", formatEdd(edd), document);
+
+			var age = calculateGestationalAge(edd);
+			replaceSpanText("ovuAge", formatAgeShort(age), document);
+		}
+	}
+
+	function calculateUS() {
+		var year = document.getElementById("usYear").value;
+		var month = document.getElementById("usMonth").value;
+		var day = document.getElementById("usDay").value;
+		var usAgeWeek = document.getElementById("usAgeWeek").value;
+		var usAgeDay = document.getElementById("usAgeDay").value;
+		var range = document.getElementById("range").value;
+
+		if (validateDate(year, month, day, "usDateError", document)
+			& validateGestationalAge(usAgeWeek, usAgeDay, "usAgeError", document))
+		{
+			var age = new GestationalAge(parseInt(usAgeWeek), parseInt(usAgeDay));
+			var edd = age.getEDD(createDate(year, month - 1, day));
+			replaceSpanText("usEDD", formatEdd(edd), document);
+			calculateUSRange(edd);
+
+			var age = calculateGestationalAge(edd);
+			replaceSpanText("usAge", formatAgeShort(age), document);
+		}
+	}
+
+	function calculateUSRange(edd) {
+		var range = document.getElementById("range").value;
+
+		if (range.length > 0 && validateRange(range, "rangeError", document))
+		{
+			var startDate = createDate(edd.getFullYear(), edd.getMonth(), edd.getDate() - parseInt(range));
+			var endDate = createDate(edd.getFullYear(), edd.getMonth(), edd.getDate() + parseInt(range));
+			replaceSpanText("usEDDRange", formatDateRange(startDate, endDate), document);
+		}
+	}
+
+	function calculateGestationalAge(edd) {
+		return getGestationalAge(getToday(), edd)
+	}
+
+	function formatEdd(edd) {
+		return formatDate(edd);
+	}
+
+	function toggleSection(flagId, tableId) {
+		var table = document.getElementById(tableId);
+		var flag = document.getElementById(flagId);
+
+		if (flag.checked) {
+			table.style.display = "block";
+		} else {
+			table.style.display = "none";
+		}
+
+		toggleButtons();
+	}
+
+</script>
+
+</body>
+</html>
