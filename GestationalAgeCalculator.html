@@ -9,6 +9,7 @@
 	<script src="./js/validations.js"></script>
 	<script src="./js/Timeframe.js"></script>
 	<script src="./js/Test.js"></script>
+	<script src="./js/Appointment.js"></script>
 	<script src="./js/utilities.js"></script>
 	<script src="./js/formatters.js"></script>
 	<script src="./js/date.js"></script>
@@ -277,8 +278,8 @@
 
 	function printAppointments(edd) {
 		var output = "";
-		for (i = 0; i < TESTS.length; i++) {
-			output = output + formatTest(TESTS[i], edd) + "\n\n";
+		for (i = 0; i < APPOINTMENTS.length; i++) {
+			output = output + formatAppointment(APPOINTMENTS[i], edd) + "\n\n";
 		}
 		return output;
 	}
