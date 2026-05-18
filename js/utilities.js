@@ -23,7 +23,7 @@ function resetSpans(document) {
 
 function setHighlight(fieldId, document) {
 	var field = document.getElementById(fieldId);
-	field.style.border = "4px solid blue";
+	field.style.border = "2px solid blue";
 }
 
 function removeHighlight(fieldId, document) {
