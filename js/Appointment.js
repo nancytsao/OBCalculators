@@ -1,4 +1,4 @@
-var APPOINTMENTS = [
+const APPOINTMENTS = [
     8,
     14,
     20,
