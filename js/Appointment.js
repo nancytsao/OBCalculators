@@ -8,6 +8,7 @@ const APPOINTMENTS = [
     34,
     36,
     38,
-    40  
+    40,
+    41
 ];
 
