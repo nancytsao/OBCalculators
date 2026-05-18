@@ -26,15 +26,15 @@
 				<tr>
 					<td>EDD:&nbsp;</td>
 					<td><input type="text" id="eddDay" style="text-align:center" size="2" maxlength="2"
-								onKeyUp="hideScreeningDates();"/>
+								onKeyUp="hideDisplayDates();"/>
 					</td>
 					<td>-</td>
 					<td><input type="text" id="eddMonth" style="text-align:center" size="2" maxlength="2"
-								onKeyUp="hideScreeningDates();"/>
+								onKeyUp="hideDisplayDates();"/>
 					</td>
 					<td>-</td>
 					<td><input type="text" id="eddYear" style="text-align:center" size="4" maxlength="4"
-								onKeyUp="hideScreeningDates();"/>
+								onKeyUp="hideDisplayDates();"/>
 					</td>
 					<td>&nbsp;<span id="eddError" style="font-size:small;color:red"></span></td>
 				</tr>
@@ -119,7 +119,10 @@
 			<table>
 				<tr>
 					<td>
-					<input type="button" id="screeningDateCheckbox" onClick="displayScreeningDates();" value="Show Screening Dates"/>
+					<input type="button" id="screeningDateCheckbox" onClick="displayScreeningDates();" value="Screening Dates"/>
+					</td>
+					<td>
+					<input type="button" id="appointmentDateCheckbox" onClick="displayAppointmentDates();" value="Appointment Dates"/>
 					</td>
 					<td>
 					<input type="button" onClick="reset();load();" value="Reset"/>
@@ -128,7 +131,7 @@
 			</table>
 		</td></tr>
 		<tr><td>
-			<span id="screeningDateSpan"></span>
+			<span id="displayDatesSpan"></span>
 		</td></tr>
 		<tr><td>
 			<table>
@@ -242,12 +245,26 @@
 			var edd = createDate(eddYear, eddMonth - 1, eddDay);
 			var output = printTests(edd);
 
-			processAndDisplayScreeningDates(output);
+			processAndDisplayDates(output);
 		}
 	}
 
-	function hideScreeningDates() {
-		clearSpanText("screeningDateSpan", document);
+	function displayAppointmentDates() {
+		var eddYear = document.getElementById("eddYear").value;
+		var eddMonth = document.getElementById("eddMonth").value;
+		var eddDay = document.getElementById("eddDay").value;
+
+		if (validateDate(eddYear, eddMonth, eddDay, "eddError", document))
+		{
+			var edd = createDate(eddYear, eddMonth - 1, eddDay);
+			var output = printAppointments(edd);
+
+			processAndDisplayDates(output);
+		}
+	}
+
+	function hideDisplayDates() {
+		clearSpanText("displayDatesSpan", document);
 	}
 
 	function printTests(edd) {
@@ -258,9 +275,17 @@
 		return output;
 	}
 
-	function processAndDisplayScreeningDates(output) {
+	function printAppointments(edd) {
+		var output = "";
+		for (i = 0; i < TESTS.length; i++) {
+			output = output + formatTest(TESTS[i], edd) + "\n\n";
+		}
+		return output;
+	}
+
+	function processAndDisplayDates(output) {
 		var lines = output.split("\n");
-		var span = document.getElementById("screeningDateSpan");
+		var span = document.getElementById("displayDatesSpan");
 
 		removeChildNodes(span);
 
